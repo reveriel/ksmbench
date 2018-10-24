@@ -1,5 +1,3 @@
-#!/usr/bin/env sh
-
 ###
 # random start $apps for $loopn times
 # get
@@ -32,7 +30,6 @@ activs=(
 "com.sina.weibo/.SplashActivity"
 )
 
-
 app_nr=${#activs[@]}
 
 ## start app $1
@@ -42,10 +39,11 @@ app_nr=${#activs[@]}
 function start_app() {
     echo "start ${apps[$1]}"
     # if time out , result is empty
-    time=$(timeout 5.0 am start -W ${activs[$1]} | grep TotalTime | cut -d":" -f2)
+    time=$(timeout 5.0 am start -W ${activs[$1]} | grep TotalTime  \
+        | sed 's/[ ][ ]*//g' | cut -d":" -f2)
     # timeout 5.0 am start -W ${activs[$1]}
     echo "time = $time"
-    echo "$1 $time" >> $time_file
+    echo "$1,$time" >> $time_file
 }
 
 ksmd_pid=$(ps -e | grep ksmd | sed 's/[\t ][\t ]*/ /g' | cut -d ' ' -f 2)

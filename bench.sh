@@ -99,7 +99,6 @@ trap intexit INT
 > $cpu_file
 > $sharing_file
 
-
 # start cpu moniter
 cpu_moniter&
 cpu_moniter_pid=$!
@@ -108,6 +107,8 @@ cpu_moniter_pid=$!
 sharing_moniter&
 sharing_moniter_pid=$!
 
+# pseudorandom
+RANDOM=0
 
 # last start app. always start a new app
 last_app=$(( $app_nr + 1 ))

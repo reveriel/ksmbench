@@ -1,4 +1,6 @@
 ###
+# this script should be "push.sh"ed to the phone to be excuted.
+#
 # random start $apps for $loopn times
 # get
 #   1. start time

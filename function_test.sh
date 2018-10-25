@@ -1,3 +1,4 @@
+# test code: how to write shell sciprt
 cpu_file="cpu.txt"
 
 ksmd_pid=$(ps -e | grep ksmd | sed 's/[\t ][\t ]*/ /g' | cut -d ' ' -f 2)

@@ -19,11 +19,15 @@ function get_package_names() {
 }
 
 # "com.UCMobile"  # UC give strange start time, don't use it
-apps=("com.qiyi.video"
+apps=(
+"com.qiyi.video"
 "com.xunmeng.pinduoduo"
-"com.smile.gifmaker"
+# "com.smile.gifmaker"
 "com.tencent.mobileqq"
-"com.sina.weibo")
+# "com.sina.weibo"
+"com.touchtype.swiftkey"
+"com.tencent.karaoke"
+)
 
 # activs=("com.qiyi.video/.WelcomActivity"
 # "com.xunmeng.pinduoduo/.ui.activity.MainFrameActivity"

@@ -18,6 +18,6 @@ cpu_data = np.genfromtxt(cpu_file)
 sharing_data = np.genfromtxt(sharing_file, dtype='int16')
 total_time = np.genfromtxt(total_time_file, dtype='i8')
 
-print(total_time, round(avg(cpu_data), 2), int(avg(sharing_data)))
+print(total_time, round(avg(cpu_data), 2), int(round(avg(sharing_data), 0)))
 
 

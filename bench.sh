@@ -13,7 +13,6 @@ cpu_file="cpu.txt"
 sharing_file="sharing.txt"
 total_time_file="total_time.txt"
 
-
 loopn=100
 
 apps=(
@@ -50,11 +49,9 @@ function start_app() {
     # sometimes am start may take forever to finish, use timeout to prevent stopping this
     # timeout seems not working..
     # loop in case of empty result
-    time=""
-    while [[ -z $time ]]; do
-        time=$(timeout 10.0 am start -W ${activs[$1]} | grep TotalTime  \
-            | sed 's/[ ][ ]*//g' | cut -d":" -f2)
-    done
+    # while [[ -z $time ]]; do
+    time=$(am start -W ${activs[$1]} | grep TotalTime  \
+        | sed 's/[ ][ ]*//g' | cut -d":" -f2)
     # timeout 5.0 am start -W ${activs[$1]}
     echo "time = $time"
     echo "$1,$time" >> $time_file
@@ -94,7 +91,7 @@ function cpu_moniter() {
     done
 }
 
-sysfs_sharing_file=$(find /sys/kernel/mm/ -name "*sharing")
+sysfs_sharing_file=$(find /sys/kernel/mm/ -name "pages_sharing")
 
 # get ksmd's pages_sharing, every second
 # save to file $sharing_file
@@ -169,6 +166,7 @@ do
     start_app $this_app
     i=$((i + 1))
 
+    sleep 1
 
     ### random
     # this_app=$(( RANDOM % $app_nr ))

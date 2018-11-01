@@ -10,7 +10,7 @@ time=$(date +%m%d%H%M%S)
 ## main
 
 
-if [ $@ -ne 1 ]; then
+if [ $# -ne 1 ]; then
     echo "need one argument, <note>"
     exit 1
 fi

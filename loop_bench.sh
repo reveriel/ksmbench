@@ -5,7 +5,7 @@
 
 nloop=10
 
-note="pksm, pages_to_scan 200, sleep 100, RR, loop 100, wait1s"
+note="pksm, pages_to_scan 100, sleep 100, RR, loop 100, wait1s"
 
 echo $note
 echo "are you sure the configuration is right? [y/n]"
@@ -53,7 +53,7 @@ while [ $i -le $nloop ]; do
     fi
 
     # archive
-    ./save_data.sh $note
+    ./save_data.sh "$note"
     ./data_summary.py >> $summary_file
 
     i=$((i + 1))

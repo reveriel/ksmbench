@@ -26,7 +26,7 @@ echo "save files to " $archive/$time
 if [[ $# -eq 1 ]]; then
     echo "save note: " $1
     echo $1 > $archive/$time/note
-    ./data_summary.py
+    # ./data_summary.py
 fi
 
 

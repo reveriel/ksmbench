@@ -42,7 +42,6 @@ app_nr=${#activs[@]}
 
 ## start app $1
 # write data to file
-# script, kill am if it takes more than 2 seconds
 function start_app() {
     echo "start ${apps[$1]}"
     # if time out , result is empty
@@ -50,7 +49,8 @@ function start_app() {
     # timeout seems not working..
     # loop in case of empty result
     # while [[ -z $time ]]; do
-    time=$(am start -W ${activs[$1]} | grep TotalTime  \
+    time=$(am start -W ${activs[$1]} -c android.intent.category.LAUNCHER \
+        -a android.intent.action.MAIN | grep TotalTime  \
         | sed 's/[ ][ ]*//g' | cut -d":" -f2)
     # timeout 5.0 am start -W ${activs[$1]}
     echo "time = $time"
@@ -141,7 +141,7 @@ trap intexit INT
 > $sharing_file
 
 kill_all_apps
-sleep 2
+sleep 3
 
 # start cpu moniter
 cpu_moniter&
@@ -166,7 +166,7 @@ do
     start_app $this_app
     i=$((i + 1))
 
-    sleep 1
+    sleep 3
 
     ### random
     # this_app=$(( RANDOM % $app_nr ))

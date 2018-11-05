@@ -5,32 +5,48 @@
 
 nloop=10
 
-note="pksm, pages_to_scan 100, sleep 100, RR, loop 100, wait1s"
+if [ $# -ne 2 ]; then
+    echo "need two argument, <pages_to_scan> <sleep_ms>"
+    echo "exit"
+    exit 1
+fi
+
+pages_to_scan=$1
+sleep_ms=$2
+
+note="pksm, pages_to_scan $pages_to_scan, sleep $sleep_ms, RR, loop 100, wait3s"
+
+# if no devices, adb devices | wc -l = 2
+# if devices is up, adb devices | wc -l = 3
+wait_until_up() {
+    ret=2
+    while [ $ret -eq 2 ]; do
+        sleep 5
+        ret=$(adb devices | wc -l)
+    done
+}
 
 echo $note
-echo "are you sure the configuration is right? [y/n]"
-read -n1 ans
-case $ans in
-    y)
-        echo
-        echo "continue test"
-        ;;
-    n)
-        echo
-        echo "exit"
-        exit 0
-        ;;
-    *)
-        echo
-        echo "exit"
-        exit 0
-        ;;
-esac
 
-summary_file="summary.txt"
+echo "Reboot phone now."
+adb reboot
+echo "Waiting phone up ..."
+wait_until_up
+echo "Phone up."
+echo "Wait 60 seconds here..."
+sleep 60
 
+adb shell "echo $pages_to_scan > /sys/kernel/mm/pksm/pages_to_scan"
+adb shell "echo $sleep_ms > /sys/kernel/mm/pksm/sleep_millisecs"
+
+summary_file="summary-$pages_to_scan-$sleep_ms.txt"
+echo "Log file $summary_file"
 echo $note > $summary_file
 
+echo "push bench.sh to device"
+adb push bench.sh /data/local/tmp/
+
+echo "Start benching ..."
 i=1
 while [ $i -le $nloop ]; do
     echo "bench.sh" "round : " $i
@@ -58,4 +74,7 @@ while [ $i -le $nloop ]; do
 
     i=$((i + 1))
 done
+echo "End benching"
+
+
 

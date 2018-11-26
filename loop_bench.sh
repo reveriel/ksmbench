@@ -14,7 +14,7 @@ fi
 pages_to_scan=$1
 sleep_ms=$2
 
-note="noksm, pages_to_scan $pages_to_scan, sleep $sleep_ms, RR, loop 100, wait2s-home-wait1"
+note="pksm-delay, pages_to_scan $pages_to_scan, sleep $sleep_ms, seq, loop 100, wait2s-home-wait1"
 
 # if no devices, adb devices | wc -l = 2
 # if devices is up, adb devices | wc -l = 3
@@ -49,7 +49,7 @@ adb push bench.sh /data/local/tmp/
 echo "Start benching ..."
 i=1
 while [ $i -le $nloop ]; do
-    echo "bench.sh" "round : " $i
+    echo "loopbench.sh : round  ($i / $nloop)"
 
     retry_left=5 # max number of retry times
     until [ $retry_left -eq 0 ]
@@ -57,8 +57,21 @@ while [ $i -le $nloop ]; do
         echo $(( 6 - $retry_left )) "try"
 
         # gtimeout 1.0 ls / > /dev/null && break
-        # timeout 300 seconds
-        gtimeout 600.0 adb shell "cd /data/local/tmp/ && ./bench.sh" && break
+        # timeout 10000 seconds
+        gtimeout 900.0 adb shell "cd /data/local/tmp/ && ./bench.sh" && break
+
+        # retry
+        # reboot
+
+        echo "Reboot phone now."
+        adb reboot
+        echo "Waiting phone up ..."
+        wait_until_up
+        echo "Phone up."
+        echo "Wait 60 seconds here..."
+        sleep 60
+        adb shell "echo $pages_to_scan > /sys/kernel/mm/pksm/pages_to_scan"
+        adb shell "echo $sleep_ms > /sys/kernel/mm/pksm/sleep_millisecs"
 
         retry_left=$(( $retry_left - 1 ))
     done

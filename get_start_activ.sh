@@ -2,6 +2,9 @@
 # this script print the main activities of
 # all packages in vairalbe $apps
 
+## global
+# all packgea in the system
+pkg=()
 
 ## command to get main activity:
 # pm dump PACKAGE_NAME | grep -A 1 action.MAIN | head -n 2 | tail -n 1 | cut -d' ' -f12
@@ -16,8 +19,15 @@ function get_package_names() {
     echo "============= available apps ==========="
     # exclude build in packages
     # pm -l | cut -d":" -f2 | grep -v "huawei" | grep -v "android" | grep -v "qualcom"
-    pm -l | cut -d":" -f2
-    echo "================ end ==================="
+    # "androidhwext" is no a normal package
+    pkg=$(pm -l | cut -d":" -f2 | grep -v "androidhwext")
+    # echo $pkg;
+    for p in $pkg; do
+        echo -n "$p\t"
+        dumpsys package $p | grep versionName
+        ## note there may be the same package of multiple version
+    done
+    # echo "================ end ==================="
 }
 
 # "com.UCMobile"  # UC give strange start time, don't use it
@@ -60,7 +70,7 @@ do
 done
 
 
-if [[ $LIST -eq 0 ]]; then
+if [[ $LIST -eq 1 ]]; then
     get_package_names
     exit 0
 fi

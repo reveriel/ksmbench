@@ -14,7 +14,9 @@ function get_main_activ() {
 ## print all package names excluding system apps
 function get_package_names() {
     echo "============= available apps ==========="
-    pm -l | cut -d":" -f2 | grep -v "huawei" | grep -v "android" | grep -v "qualcom"
+    # exclude build in packages
+    # pm -l | cut -d":" -f2 | grep -v "huawei" | grep -v "android" | grep -v "qualcom"
+    pm -l | cut -d":" -f2
     echo "================ end ==================="
 }
 
@@ -35,7 +37,34 @@ apps=(
 
 ##### main
 
-get_package_names
+# parse arguments
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+    key="$1"
+    case $key in
+        -l)
+            LIST=1
+            shift
+            ;;
+        -h)
+            echo "usage: $0 [-l|-h]"
+            echo "    -l: list all packges in system"
+            echo "    -h: print this help"
+            exit 0
+            ;;
+        *)
+            ;;
+    esac
+done
+
+
+if [[ $LIST -eq 0 ]]; then
+    get_package_names
+    exit 0
+fi
+
 
 for app in "${apps[@]}"
 do

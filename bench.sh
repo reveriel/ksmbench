@@ -166,7 +166,9 @@ do
     start_app $this_app
     i=$((i + 1))
 
-    sleep 3
+    sleep 2
+    am start -a android.intent.action.MAIN -c android.intent.category.HOME
+    sleep 1
 
     ### random
     # this_app=$(( RANDOM % $app_nr ))

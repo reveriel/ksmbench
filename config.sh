@@ -8,6 +8,8 @@ apps=(
 "com.tencent.tmgp.sgame"
 "com.happyelements.AndroidAnimal"
 "com.sina.weibo"
+"com.baidu.tieba"
+"com.huawei.camera"
 "com.qiyi.video"
 "com.android.gallery3d"
 "com.evernote"
@@ -21,7 +23,7 @@ apps=(
 
 # in the same order with $apps
 # their start/main activity
-# use script get_main_activ.sh to get it, **manually**
+# use script get_main_activ.sh to get it, **manually** checked
 activs=(
 "com.tencent.mm/.ui.LauncherUI"
 "com.tencent.mobileqq/.activity.SplashActivity"
@@ -29,6 +31,8 @@ activs=(
 "com.tencent.tmgp.sgame/.SGameActivity"
 "com.happyelements.AndroidAnimal/com.happyelements.hellolua.MainActivity"
 "com.sina.weibo/.SplashActivity"
+"com.baidu.tieba/.LogoActivity"
+"com.huawei.camera/com.huawei.camera"
 "com.qiyi.video/.WelcomeActivity"
 "com.android.gallery3d/com.huawei.gallery.app.GalleryMain"
 "com.evernote/.ui.HomeActivity"

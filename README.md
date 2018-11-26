@@ -38,7 +38,7 @@ adapted for China app market.
 | iqiyi           |         9.11.0 | com.qiyi.video                  |
 | gallery         |      8.0.1.312 | com.android.gallery3d           |
 | evernote        |          9.2.3 | com.evernote                    |
-| adobe reader    | a18.0.0.181869 | com.adobe.reader                |
+| adobe reader    |  18.0.0.181869 | com.adobe.reader                |
 | calender        |      8.0.0.307 | com.android.calender            |
 | browser         |   70.0.3538.80 | com.android.chrome              |
 | maps            |         10.3.1 | com.google.android.apps.maps    |
@@ -65,6 +65,15 @@ never launched.
 
 This command block until the activity is started, so we
 can measure the total time used to run this bench.
+
+If the app is resumed. A warning say this will be printed:
+
+```
+Warning: Activity not started, its current task has been brought to the front
+```
+This is can be counted.
+
+
 
 2. logcat.
 

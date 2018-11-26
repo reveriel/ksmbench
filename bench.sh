@@ -2,7 +2,7 @@
 ###
 # this script should be "push.sh"ed to the phone to be excuted.
 #
-# random start $apps for $loopn times
+#
 # get
 #   1. start time
 #   2. cpu time, 1 sample per second
@@ -13,32 +13,24 @@ cpu_file="cpu.txt"
 sharing_file="sharing.txt"
 total_time_file="total_time.txt"
 
+## global variables
 loopn=100
 
-apps=(
-"com.qiyi.video"
-"com.xunmeng.pinduoduo"
-# "com.smile.gifmaker"
-"com.tencent.mobileqq"
-# "com.sina.weibo"
-"com.touchtype.swiftkey"
-"com.tencent.karaoke"
-)
+source ./config.sh
 
-# in order of $apps
-# their start/main activity
-# use script get_main_activ.sh to get it, **manually**
-activs=(
-"com.qiyi.video/.WelcomeActivity"
-"com.xunmeng.pinduoduo/.ui.activity.MainFrameActivity"
-# "com.smile.gifmaker/com.yxcorp.gifshow.HomeActivity"
-"com.tencent.mobileqq/.activity.SplashActivity"
-# "com.sina.weibo/.SplashActivity"
-"com.touchtype.swiftkey/com.touchtype.LauncherActivity"
-"com.tencent.karaoke/.module.splash.ui.SplashBaseActivity"
-)
-
+# number of apps
 app_nr=${#activs[@]}
+# check
+if [[ ${#activs[@]} -ne ${#apps[@]} ]]; then
+    echo "ERROR: number of activs and apps no match. Exit."
+    exit 1
+fi
+
+# the pid of ksmd
+ksmd_pid=$(ps -e | grep ksmd | sed 's/[\t ][\t ]*/ /g' | cut -d ' ' -f 2)
+
+# the sysfs file name, pksm_pages_sharing or ksm_pages_sharing
+sysfs_sharing_file=$(find /sys/kernel/mm/ -name "pages_sharing")
 
 ## start app $1
 # write data to file
@@ -65,8 +57,6 @@ function kill_all_apps() {
     done
 }
 
-ksmd_pid=$(ps -e | grep ksmd | sed 's/[\t ][\t ]*/ /g' | cut -d ' ' -f 2)
-
 # get ksmd's cpu usage using top, every second
 # save to file $cpu_file
 function cpu_moniter() {
@@ -91,7 +81,6 @@ function cpu_moniter() {
     done
 }
 
-sysfs_sharing_file=$(find /sys/kernel/mm/ -name "pages_sharing")
 
 # get ksmd's pages_sharing, every second
 # save to file $sharing_file
@@ -129,6 +118,8 @@ function hupexit() {
     exit
 }
 
+
+
 ################
 # main
 
@@ -151,35 +142,23 @@ cpu_moniter_pid=$!
 sharing_moniter&
 sharing_moniter_pid=$!
 
-# pseudorandom
-RANDOM=0
-
 start_time=$SECONDS
 
 # last start app. always start a new app
 last_app=$(( $app_nr + 1 ))
-i=0
-while [[ $i -lt $loopn ]];
-do
-    ### round robin
-    this_app=$((i % $app_nr))
-    start_app $this_app
-    i=$((i + 1))
+
+# read the seq file. launch
+seq=$(cat seq)
+for app_i in ${seq[@]}; do
+
+    start_app $app_i
 
     sleep 2
+    # go home
     am start -a android.intent.action.MAIN -c android.intent.category.HOME
     sleep 1
-
-    ### random
-    # this_app=$(( RANDOM % $app_nr ))
-    # while [[ $this_app -eq $last_app ]];
-    # do
-    #     this_app=$(( RANDOM % $app_nr ))
-    # done
-    # start_app $this_app
-    # last_app=$this_app
-    # i=$((i + 1))
 done
+
 
 elapsed_time=$(($SECONDS - $start_time))
 echo "total time = " $elapsed_time

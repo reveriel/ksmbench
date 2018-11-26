@@ -2,15 +2,26 @@
 # this script print the main activities of
 # all packages in vairalbe $apps
 
-## global
+## global variables
 # all packgea in the system
 pkg=()
+
+## note:
+# this command gets all activity in a package
+# shell dumpsys package | grep -i "your.package.name" | grep Activity
 
 ## command to get main activity:
 # pm dump PACKAGE_NAME | grep -A 1 action.MAIN | head -n 2 | tail -n 1 | cut -d' ' -f12
 # @input: $1 package_name
+# this may fail. get a wrong activity name.
 function get_main_activ() {
-    activ=$(pm dump $1 | grep -A 1 action.MAIN | head -n 2 | tail -n 1 | cut -d' ' -f12)
+    # activ=$(pm dump $1 | grep -A 1 action.MAIN | head -n 2 | tail -n 1 | cut -d' ' -f12)
+    activ=$(pm dump $1 | grep -B 2 category.LAUNCHER | grep -B 1 action.MAIN | head -n 1 |
+        cut -d' ' -f12)
+    if [[ -z $activ ]]; then
+        activ=$(pm dump $1 | grep -B 3 category.LAUNCHER | grep -B 1 action.MAIN | head -n 1 |
+            cut -d' ' -f12)
+    fi
     echo $activ
 }
 
@@ -30,16 +41,18 @@ function get_package_names() {
     # echo "================ end ==================="
 }
 
-# "com.UCMobile"  # UC give strange start time, don't use it
-apps=(
-"com.qiyi.video"
-"com.xunmeng.pinduoduo"
-# "com.smile.gifmaker"
-"com.tencent.mobileqq"
-# "com.sina.weibo"
-"com.touchtype.swiftkey"
-"com.tencent.karaoke"
-)
+# apps=(
+# "com.qiyi.video"
+# "com.xunmeng.pinduoduo"
+# # "com.smile.gifmaker"
+# "com.tencent.mobileqq"
+# # "com.sina.weibo"
+# "com.touchtype.swiftkey"
+# "com.tencent.karaoke"
+# )
+
+. ./config.sh
+
 
 # activs=("com.qiyi.video/.WelcomActivity"
 # "com.xunmeng.pinduoduo/.ui.activity.MainFrameActivity"

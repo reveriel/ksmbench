@@ -34,7 +34,7 @@ dist=(
   4
 )
 # random number seed
-r=0
+r=100
 # the result sequence
 seq=()
 
@@ -82,6 +82,8 @@ function print_seq() {
     done
 }
 
+
+####### main
 
 init_seq
 shuffle

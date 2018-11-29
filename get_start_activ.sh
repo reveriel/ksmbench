@@ -62,7 +62,6 @@ function get_package_names() {
 
 # parse arguments
 
-POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
     key="$1"

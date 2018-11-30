@@ -93,6 +93,9 @@ reported. Second. When you resume an app, there will be no report.
 
 ## reference
 
+paper: [SmartLMK](https://dl.acm.org/citation.cfm?id=2894755)
+
+
 | Category          | App                  | Launch | Fraction |
 | :--               | :--                  |    --: |      --: |
 | Communication     | Gamil                |     24 |     25.8 |

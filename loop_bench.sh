@@ -6,13 +6,29 @@
 nloop=10
 
 NOKSM=0
+PKSM=0
+PKSM_D=0
 case $1 in
     -n)
         NOKSM=1
         note="noksm, seq, loop 100, wait2s-home-wait1"
         summary_file="summary-noksm.txt"
         ;;
+    -p)
+        PKSM=1
+        if [ $# -ne 3 ]; then
+            echo "need 2 arguments,<pages_to_scan> <sleep_ms>"
+            echo "exit"
+            exit 1
+        fi
+        pages_to_scan=$2
+        sleep_ms=$3
+        note="pksm, pages_to_scan $pages_to_scan, sleep_ms $sleep_ms, seq, loop 100,
+        wait2s-home-wait1"
+        summary_file="summary-$pages_to_scan-$sleep_ms.txt"
+        ;;
     *)
+        PKSM_D=1
         if [ $# -ne 4 ]; then
             echo "need 4 arguments,<delay_time> <sleep_ms> <ksm_n> <pg_max>"
             echo "exit"
@@ -25,7 +41,7 @@ case $1 in
         pg_max=$4
         note="pksm-delay-time, delay_time $delay_time, sleep $sleep_ms, ksm_n $ksm_n,
         pg_max $pg_max, seq, loop 100, wait2s-home-wait1"
-        summary_file="summary-nodirty-$delay_time-$sleep_ms-$ksm_n-$pg_max.txt"
+        summary_file="summary-$delay_time-$sleep_ms-$ksm_n-$pg_max.txt"
         ;;
 esac
 
@@ -40,12 +56,15 @@ function wait_until_up() {
 }
 
 function init_parameters() {
-    if [[ $NOKSM -eq 0 ]]; then
+    if [[ $PKSM_D -eq 1 ]]; then
         adb shell "echo $delay_time > /sys/kernel/mm/pksm/delay_time"
-        # adb shell "echo $pages_to_scan > /sys/kernel/mm/pksm/pages_to_scan"
         adb shell "echo $sleep_ms > /sys/kernel/mm/pksm/sleep_millisecs"
         adb shell "echo $ksm_n > /sys/kernel/mm/pksm/n"
-        adb shell "echo $pg_max > /sys/kernel/mm/pages_to_scan_max"
+        adb shell "echo $pg_max > /sys/kernel/mm/pksm/pages_to_scan_max"
+    fi
+    if [[ $PKSM -eq 1 ]]; then
+        adb shell "echo $pages_to_scan > /sys/kernel/mm/pksm/pages_to_scan"
+        adb shell "echo $sleep_ms > /sys/kernel/mm/pksm/sleep_millisecs"
     fi
 }
 
